@@ -11,8 +11,10 @@
   "dependencies": {
     "fast-sort": "^3.4.1",
     "next": "13.5.6",
+    "prisma": "^6.4.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/node": "^20",

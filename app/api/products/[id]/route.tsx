@@ -1,34 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import schema from "../schema";
+import productSchema from "../schema";
 
-export function GET(
+export async function GET(
   request: NextRequest,
-  { params }: { params: { id: number; name: string } }
+  params: { id: number; name: string; price: number }
 ) {
-  //fetch data from db
   if (params?.id > 10)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
-
-  return NextResponse.json({ id: params.id, name: " Binh" });
+  return NextResponse.json([{ id: params.id, name: "Milk", price: 2.5 }]);
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: number; name: string } }
+  params: { id: number; name: string; price: number }
 ) {
   const body = await request.json();
-  const validate = schema.safeParse(body);
+  const validate = productSchema.safeParse(body);
   if (!validate.success)
     return NextResponse.json(validate.error.errors, { status: 400 });
-  if (params.id > 10)
+  if (params?.id > 10)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
-  return NextResponse.json({ id: 1, name: body.name });
+  return NextResponse.json({ name: body.name, price: body.price });
 }
-export function DELETE(
+
+export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: number; name: string } }
+  params: { id: number; name: string; price: number }
 ) {
-  if (params.id > 10)
+  if (params?.id > 10)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   return NextResponse.json({});
 }
