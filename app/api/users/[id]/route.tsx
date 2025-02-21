@@ -20,21 +20,39 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: number; name: string } }
+  { params }: { params: { id: string; name: string; email: string } }
 ) {
   const body = await request.json();
   const validate = schema.safeParse(body);
+
+  const user = await prisma.user.update({
+    where: {
+      id: parseInt(params.id),
+    },
+    data: {
+      name: body.name,
+      email: body.email,
+    },
+  });
   if (!validate.success)
     return NextResponse.json(validate.error.errors, { status: 400 });
-  if (params.id > 10)
+  if (!user)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   return NextResponse.json({ id: 1, name: body.name });
 }
-export function DELETE(
+export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: number; name: string } }
+  { params }: { params: { id: string } }
 ) {
-  if (params.id > 10)
+  try {
+    const user = await prisma.user.delete({
+      where: {
+        id: parseInt(params.id),
+      },
+    });
+
+    return NextResponse.json({ message: "User deleted successfully" });
+  } catch (error) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
-  return NextResponse.json({});
+  }
 }

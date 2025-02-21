@@ -10,8 +10,29 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const validate = schema.safeParse(body);
+  const lastUser = await prisma.user.findFirst({
+    orderBy: { id: "desc" },
+  });
+
+  const newId = lastUser ? lastUser.id + 1 : 1;
   if (!validate.success)
     return NextResponse.json(validate.error.errors, { status: 400 });
 
-  return NextResponse.json({ id: 1, name: body.name }, { status: 201 });
+  const duplicateUser = await prisma.user.findUnique({
+    where: { email: body.email },
+  });
+  if (duplicateUser)
+    return NextResponse.json(
+      { message: "Email already exists" },
+      { status: 401 }
+    );
+  const user = await prisma.user.create({
+    data: {
+      id: newId,
+      name: body.name,
+      email: body.email,
+    },
+  });
+
+  return NextResponse.json(user);
 }
