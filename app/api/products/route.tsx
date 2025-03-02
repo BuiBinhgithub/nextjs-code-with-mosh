@@ -1,4 +1,3 @@
-import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
 import productSchema from "./schema";
 import prisma from "@/prisma/client";
