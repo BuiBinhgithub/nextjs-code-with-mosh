@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "./NavBar";
 import { Suspense } from "react";
-
+import AuthProvider from "./auth/Provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,16 +19,18 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="winter">
       <body className={inter.className}>
-        <NavBar />
-        <main className="p-5">
-          <Suspense
-            fallback={
-              <span className="loading loading-spinner loading-lg"></span>
-            }
-          >
-            {children}
-          </Suspense>
-        </main>
+        <AuthProvider>
+          <NavBar />
+          <main className="p-5">
+            <Suspense
+              fallback={
+                <span className="loading loading-spinner loading-lg"></span>
+              }
+            >
+              {children}
+            </Suspense>
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
